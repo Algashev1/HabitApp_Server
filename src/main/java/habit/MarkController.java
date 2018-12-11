@@ -47,4 +47,15 @@ public class MarkController {
         }
     }
 
+    @RequestMapping("/deleteMark")
+    public void addHabit(@RequestParam(value="id") int id) {
+        try {
+            DbHandler dbHandler = DbHandler.getInstance();
+            dbHandler.deleteMark(id);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
