@@ -46,7 +46,8 @@ public class DbHandler {
             while (resultSet.next()) {
                 list.add(new Habit(resultSet.getInt("id_habit"),
                         resultSet.getString("name_habit"),
-                        resultSet.getString("question_habit")));
+                        resultSet.getString("question_habit"),
+                        resultSet.getString("time")));
             }
             return list;
 
@@ -56,12 +57,24 @@ public class DbHandler {
         }
     }
 
-    public void updateHabit(int id, String name, String question) {
+    public void updateHabit(int id, String name, String question, String time) {
         try (PreparedStatement statement = this.connection.prepareStatement(
-                "UPDATE Habit SET name_habit = ?, question_habit = ? WHERE id_habit = ?")) {
+                "UPDATE Habit SET name_habit = ?, question_habit = ?, time = ? WHERE id_habit = ?")) {
             statement.setObject(1, name);
             statement.setObject(2, question);
-            statement.setObject(3, id);
+            statement.setObject(3, time);
+            statement.setObject(4, id);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTimeHabit(int id, String time) {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "UPDATE Habit SET time = ? WHERE id_habit = ?")) {
+            statement.setObject(1, time);
+            statement.setObject(2, id);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,8 +82,13 @@ public class DbHandler {
     }
 
     public void deleteHabit(int id) {
-        try (PreparedStatement statement = this.connection.prepareStatement(
-                "DELETE FROM Habit WHERE id_habit = ?")) {
+        try  {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "DELETE FROM Habit WHERE id_habit = ?");
+            statement.setObject(1, id);
+            statement.execute();
+            statement = this.connection.prepareStatement(
+                    "DELETE FROM Mark WHERE id_habit = ?");
             statement.setObject(1, id);
             statement.execute();
         } catch (SQLException e) {
@@ -98,6 +116,27 @@ public class DbHandler {
             List<Mark> list = new ArrayList<>();
             ResultSet resultSet = statement.executeQuery();
 
+            while (resultSet.next()) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(resultSet.getDate("date_mark"));
+                list.add(new Mark(resultSet.getInt("id_mark"),
+                        calendar,
+                        resultSet.getInt("id_habit")));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public List<Mark> getAllMarkByHabit(int id) {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT * FROM Mark WHERE id_habit = ?")) {
+            statement.setInt(1, id);
+            List<Mark> list = new ArrayList<>();
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(resultSet.getDate("date_mark"));

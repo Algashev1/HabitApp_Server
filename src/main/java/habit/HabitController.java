@@ -35,10 +35,22 @@ public class HabitController {
     }
 
     @RequestMapping("/updateHabit")
-    public void updateHabit(@RequestParam(value="id") int id, @RequestParam(value="name") String name, @RequestParam(value="question") String question) {
+    public void updateHabit(@RequestParam(value="id") int id, @RequestParam(value="name") String name,
+                            @RequestParam(value="question") String question, @RequestParam(value="time") String time) {
         try {
             DbHandler dbHandler = DbHandler.getInstance();
-            dbHandler.updateHabit(id, name, question);
+            dbHandler.updateHabit(id, name, question, time);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("/updateTimeHabit")
+    public void updateHabit(@RequestParam(value="id") int id, @RequestParam(value="time") String time) {
+        try {
+            DbHandler dbHandler = DbHandler.getInstance();
+            dbHandler.updateTimeHabit(id, time);
         }
         catch (SQLException e) {
             e.printStackTrace();

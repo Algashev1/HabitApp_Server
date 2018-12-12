@@ -19,12 +19,25 @@ public class MarkController {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
         Date d1 = new Date(calendar.getTimeInMillis());
-        calendar.add(Calendar.DATE, -4);
+        calendar.add(Calendar.DATE, -5);
         Date d2 = new Date(calendar.getTimeInMillis());
 
         try {
             DbHandler dbHandler = DbHandler.getInstance();
             return dbHandler.getAllMark(d1, d2);
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    @RequestMapping("/marksByHabit")
+    public List<Mark> marks(@RequestParam(value="id") int id) {
+        try {
+            DbHandler dbHandler = DbHandler.getInstance();
+            return dbHandler.getAllMarkByHabit(id);
 
         }
         catch (SQLException e) {
