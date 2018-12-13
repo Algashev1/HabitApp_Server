@@ -29,10 +29,11 @@ public class DbHandler {
 
     public void addHabit(Habit habit) {
         try (PreparedStatement statement = this.connection.prepareStatement(
-                "INSERT INTO Habit(`name_habit`, `question_habit`) " +
-                        "VALUES(?, ?)")) {
-            statement.setObject(1, habit.getName());
-            statement.setObject(2, habit.getQuestion());
+                "INSERT INTO Habit(`name_habit`, `question_habit`, `creationDate`) " +
+                        "VALUES(?, ?, ?)")) {
+            statement.setString(1, habit.getName());
+            statement.setString(2, habit.getQuestion());
+            statement.setDate(3, new Date(System.currentTimeMillis()));
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,10 +45,13 @@ public class DbHandler {
             List<Habit> list = new ArrayList<Habit>();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Habit");
             while (resultSet.next()) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(resultSet.getDate("creationDate"));
                 list.add(new Habit(resultSet.getInt("id_habit"),
                         resultSet.getString("name_habit"),
                         resultSet.getString("question_habit"),
-                        resultSet.getString("time")));
+                        resultSet.getString("time"),
+                        calendar));
             }
             return list;
 
