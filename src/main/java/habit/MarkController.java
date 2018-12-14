@@ -14,8 +14,8 @@ import java.util.List;
 public class MarkController {
 
     @RequestMapping("/marks")
-    public List<Mark> marks(@RequestParam(value="year") int year, @RequestParam(value="month") int month,
-                           @RequestParam(value="day") int day) {
+    public List<Mark> marks(@RequestParam(value = "year") int year, @RequestParam(value = "month") int month,
+                            @RequestParam(value = "day") int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
         Date d1 = new Date(calendar.getTimeInMillis());
@@ -26,47 +26,43 @@ public class MarkController {
             DbHandler dbHandler = DbHandler.getInstance();
             return dbHandler.getAllMark(d1, d2);
 
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
         }
     }
 
     @RequestMapping("/marksByHabit")
-    public List<Mark> marks(@RequestParam(value="id") int id) {
+    public List<Mark> marks(@RequestParam(value = "id") int id) {
         try {
             DbHandler dbHandler = DbHandler.getInstance();
             return dbHandler.getAllMarkByHabit(id);
 
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
         }
     }
 
     @RequestMapping("/addMark")
-    public void addMark(@RequestParam(value="id") int id, @RequestParam(value="year") int year,
-                        @RequestParam(value="month") int month, @RequestParam(value="day") int day) {
+    public void addMark(@RequestParam(value = "id") int id, @RequestParam(value = "year") int year,
+                        @RequestParam(value = "month") int month, @RequestParam(value = "day") int day) {
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, day);
             DbHandler dbHandler = DbHandler.getInstance();
             dbHandler.addMark(new Mark(calendar, id));
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @RequestMapping("/deleteMark")
-    public void addHabit(@RequestParam(value="id") int id) {
+    public void addHabit(@RequestParam(value = "id") int id) {
         try {
             DbHandler dbHandler = DbHandler.getInstance();
             dbHandler.deleteMark(id);
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
